@@ -3,8 +3,10 @@ const fsSync = require('fs');
 const path = require('path');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
+const isVercel = !!process.env.VERCEL;
+const hasBlobToken = !!process.env.BLOB_READ_WRITE_TOKEN;
 
-// 初始数据模板
+// ── 初始数据模板（不变的部分直接内置） ──
 const DEFAULT_DATA = {
   'chapters.json': [
     { id: 1, title: '函数、极限与连续', icon: 'functions', color: 'primary', topics: ['极限运算', '重要极限', '等价无穷小', '洛必达法则', '连续性与间断点'], levelCount: 5 },
@@ -21,14 +23,97 @@ const DEFAULT_DATA = {
   'questions.json': []
 };
 
-// 确保数据目录和初始文件存在
-function ensureDataDir() {
+// ── Vercel Blob 存储 ──
+let blobStore;
+if (isVercel && hasBlobToken) {
+  try {
+    // @vercel/blob 必须在运行时引入，不能在顶层 require
+    // 这里用动态 require，Vercel 部署时会自动安装依赖
+    blobStore = require('@vercel/blob');
+  } catch (e) {
+    console.warn('@vercel/blob not available, falling back to in-memory');
+  }
+}
+
+// ── 内存存储（Vercel 无 Blob Token 时兜底） ──
+const memoryStore = new Map();
+
+function getDefaults(filename) {
+  const data = DEFAULT_DATA[filename];
+  return data ? JSON.parse(JSON.stringify(data)) : null;
+}
+
+// ── 读取 ──
+async function readJSON(filename) {
+  // 1. Vercel Blob（持久化）
+  if (blobStore) {
+    try {
+      const { blob } = await blobStore.get(`data/${filename}`);
+      if (blob) {
+        const text = await blob.text();
+        return JSON.parse(text);
+      }
+    } catch (e) {
+      // blob 不存在，走兜底
+    }
+    const defaults = getDefaults(filename);
+    if (defaults !== null) return defaults;
+    throw new Error(`File not found: ${filename}`);
+  }
+
+  // 2. Vercel 内存（每次冷启动重建，临时用）
+  if (isVercel) {
+    if (memoryStore.has(filename)) {
+      return JSON.parse(memoryStore.get(filename));
+    }
+    const defaults = getDefaults(filename);
+    if (defaults !== null) {
+      memoryStore.set(filename, JSON.stringify(defaults));
+      return defaults;
+    }
+    throw new Error(`File not found: ${filename}`);
+  }
+
+  // 3. 本地文件系统
+  const filePath = path.join(DATA_DIR, filename);
+  const data = await fs.readFile(filePath, 'utf-8');
+  return JSON.parse(data);
+}
+
+// ── 写入 ──
+async function writeJSON(filename, data) {
+  const json = JSON.stringify(data, null, 2);
+
+  // 1. Vercel Blob
+  if (blobStore) {
+    await blobStore.put(`data/${filename}`, json, {
+      access: 'public',
+      contentType: 'application/json',
+      addRandomSuffix: false,
+    });
+    return;
+  }
+
+  // 2. Vercel 内存
+  if (isVercel) {
+    memoryStore.set(filename, json);
+    return;
+  }
+
+  // 3. 本地文件系统
+  const filePath = path.join(DATA_DIR, filename);
   if (!fsSync.existsSync(DATA_DIR)) {
     fsSync.mkdirSync(DATA_DIR, { recursive: true });
   }
+  await fs.writeFile(filePath, json, 'utf-8');
 }
-function ensureDefaultFiles() {
-  ensureDataDir();
+
+// ── 本地启动时初始化（仅限非 Vercel 环境） ──
+function initLocal() {
+  if (isVercel) return;
+  if (!fsSync.existsSync(DATA_DIR)) {
+    fsSync.mkdirSync(DATA_DIR, { recursive: true });
+  }
   for (const [filename, data] of Object.entries(DEFAULT_DATA)) {
     const filePath = path.join(DATA_DIR, filename);
     if (!fsSync.existsSync(filePath)) {
@@ -36,19 +121,6 @@ function ensureDefaultFiles() {
     }
   }
 }
-
-// 启动时初始化
-ensureDefaultFiles();
-
-async function readJSON(filename) {
-  const filePath = path.join(DATA_DIR, filename);
-  const data = await fs.readFile(filePath, 'utf-8');
-  return JSON.parse(data);
-}
-
-async function writeJSON(filename, data) {
-  const filePath = path.join(DATA_DIR, filename);
-  await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
-}
+initLocal();
 
 module.exports = { readJSON, writeJSON };

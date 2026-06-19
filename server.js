@@ -24,7 +24,11 @@ app.use('/api/progress', progressRouter);
 app.use('/api/questions', questionsRouter);
 app.use('/api/wrong-answers', wrongAnswersRouter);
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+// Start server (only when run directly, not when imported by Vercel)
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
