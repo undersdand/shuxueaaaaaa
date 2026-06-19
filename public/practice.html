@@ -126,7 +126,9 @@ body { background-color: #f5faff; min-height: max(884px, 100dvh); }
   <div id="error-state" class="text-center py-16 hidden">
     <span class="material-symbols-outlined text-5xl text-error">error</span>
     <p id="error-msg" class="mt-4 text-error"></p>
-    <a href="index.html" class="mt-4 inline-block px-6 py-2 bg-primary text-on-primary rounded-full font-label-bold">返回首页</a>
+    <pre id="error-detail" class="mt-2 text-xs text-left bg-surface-container p-3 rounded-xl overflow-auto max-h-40 hidden" style="white-space:pre-wrap;word-break:break-all;"></pre>
+    <button onclick="retryQuestion()" class="mt-4 mr-2 px-6 py-2 bg-primary text-on-primary rounded-full font-label-bold">重试</button>
+    <a href="index.html" class="mt-4 inline-block px-6 py-2 bg-surface-variant text-on-surface rounded-full font-label-bold">返回首页</a>
   </div>
 
   <!-- Panda Tip -->
@@ -219,7 +221,13 @@ async function init() {
 
     if (!res.ok) {
       const err = await res.json();
-      throw new Error(err.error || '出题失败');
+      const errorMsg = err.details ? `${err.error}: ${err.details}` : (err.error || '出题失败');
+      const errorDetail = document.getElementById('error-detail');
+      if (err.env || err.details) {
+        errorDetail.textContent = JSON.stringify(err, null, 2);
+        errorDetail.classList.remove('hidden');
+      }
+      throw new Error(errorMsg);
     }
 
     questions = await res.json();
@@ -237,6 +245,13 @@ async function init() {
     document.getElementById('error-state').classList.remove('hidden');
     document.getElementById('error-msg').textContent = err.message;
   }
+}
+
+function retryQuestion() {
+  document.getElementById('error-state').classList.add('hidden');
+  document.getElementById('error-detail').classList.add('hidden');
+  document.getElementById('loading-state').classList.remove('hidden');
+  init();
 }
 
 function renderDots() {
