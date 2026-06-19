@@ -37,8 +37,13 @@ async function readData(context, key, defaultValue) {
 }
 
 async function writeData(context, key, value) {
-  const store = getStoreInstance(context);
-  await store.setJSON(key, value);
+  try {
+    const store = getStoreInstance(context);
+    await store.setJSON(key, value);
+  } catch (err) {
+    console.error(`Blob write failed for ${key}:`, err.message);
+    // 如果 Blobs 不可用，静默跳过（AI 出题仍然可用）
+  }
 }
 
 module.exports = {
