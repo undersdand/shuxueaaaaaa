@@ -16,6 +16,7 @@ async function generateQuestions(chapter, count = 3, difficulty = 'medium') {
 
   let prompt = `出${count}道专升本高数选择题，章节：${chapter.title}，知识点：${chapter.topics.join('、')}。
 要求：4选1，解析30字内，题目要多样化不要重复。
+数学公式用LaTeX格式，用$...$包裹行内公式，$$...$$包裹独立公式。
 直接返回JSON数组，不要用markdown代码块包裹，不要任何多余文字。
 字段：stem,options,answer(数字0-3),explanation,topic。options只写选项值不要加A/B前缀。`;
 
@@ -25,12 +26,13 @@ async function generateQuestions(chapter, count = 3, difficulty = 'medium') {
 
   const response = await client.messages.create({
     model: process.env.MIMO_MODEL,
-    max_tokens: 4096,
+    max_tokens: 1024,
     messages: [{ role: 'user', content: prompt }],
   });
 
   const textBlock = response.content.find(b => b.type === 'text');
-  const content = textBlock ? textBlock.text : '';
+  const thinkingBlock = response.content.find(b => b.type === 'thinking');
+  const content = textBlock ? textBlock.text : (thinkingBlock ? thinkingBlock.thinking : '');
 
   if (!content) throw new Error('AI returned empty response');
 

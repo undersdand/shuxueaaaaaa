@@ -1,2 +1,44 @@
 ◇ injected env (4) from .env // tip: ⌘ override existing { override: true }
 Server running at http://localhost:3000
+Question generation error: Error: AI returned empty response
+    at generateQuestions (C:\Users\lenovo\OneDrive\Desktop\高数一练习\services\ai.js:35:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\lenovo\OneDrive\Desktop\高数一练习\routes\questions.js:16:23
+Question generation error: Error: AI returned empty response
+    at generateQuestions (C:\Users\lenovo\OneDrive\Desktop\高数一练习\services\ai.js:35:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\lenovo\OneDrive\Desktop\高数一练习\routes\questions.js:16:23
+Question generation error: Error: AI returned empty response
+    at generateQuestions (C:\Users\lenovo\OneDrive\Desktop\高数一练习\services\ai.js:35:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\lenovo\OneDrive\Desktop\高数一练习\routes\questions.js:16:23
+Question generation error: Error: AI returned empty response
+    at generateQuestions (C:\Users\lenovo\OneDrive\Desktop\高数一练习\services\ai.js:35:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\lenovo\OneDrive\Desktop\高数一练习\routes\questions.js:16:23
+Question generation error: Error: AI returned empty response
+    at generateQuestions (C:\Users\lenovo\OneDrive\Desktop\高数一练习\services\ai.js:35:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\lenovo\OneDrive\Desktop\高数一练习\routes\questions.js:16:23
+Question generation error: Error: AI returned empty response
+    at generateQuestions (C:\Users\lenovo\OneDrive\Desktop\高数一练习\services\ai.js:35:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\lenovo\OneDrive\Desktop\高数一练习\routes\questions.js:16:23
+JSON parse failed. Raw content: [
+  {
+    "stem": "设函数 y = e^{arctan(√x)}，则 y' 等于？",
+    "options": ["e^{arctan(√x)} / (1+x)", "e^{arctan(√x)} / (2√x)", "e^{arctan(√x)} / [2√x (1+x)]", "e^{arctan(√x)} / [√x (1+x)]"],
+    "answer": 2,
+    "explanation": "链式法则求导得 y' = e^{arctan(√x)} / [2√x (1+x)]。",
+    "topic": "复合求导"
+  },
+  {
+    "stem": "设方程 sin y + x e^y = 1 �
+Question generation error: Error: AI returned invalid JSON
+    at generateQuestions (C:\Users\lenovo\OneDrive\Desktop\高数一练习\services\ai.js:52:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\lenovo\OneDrive\Desktop\高数一练习\routes\questions.js:16:23
+Question generation error: Error: AI returned empty response
+    at generateQuestions (C:\Users\lenovo\OneDrive\Desktop\高数一练习\services\ai.js:35:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\lenovo\OneDrive\Desktop\高数一练习\routes\questions.js:16:23

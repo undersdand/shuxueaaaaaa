@@ -30,7 +30,19 @@ exports.handler = async (event, context) => {
       return { statusCode: 200, body: JSON.stringify(questions) };
     } catch (err) {
       console.error('Generate error:', err);
-      return { statusCode: 500, body: JSON.stringify({ error: 'Failed to generate questions', details: err.message, stack: err.stack }) };
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          error: 'Failed to generate questions',
+          details: err.message,
+          env: {
+            hasApiKey: !!process.env.MIMO_API_KEY,
+            hasBaseUrl: !!process.env.MIMO_BASE_URL,
+            hasModel: !!process.env.MIMO_MODEL,
+            apiKeyPrefix: process.env.MIMO_API_KEY ? process.env.MIMO_API_KEY.substring(0, 10) : 'MISSING'
+          }
+        })
+      };
     }
   }
 
