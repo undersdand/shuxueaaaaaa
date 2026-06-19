@@ -37,13 +37,29 @@ async function generateQuestions(chapter, existingStems, count = 3) {
   }
 
   const data = await response.json();
-  console.log('AI Response keys:', Object.keys(data));
-  console.log('AI Response content length:', data.content?.length);
+  console.log('AI Response full keys:', JSON.stringify(Object.keys(data)));
+  console.log('AI Response sample:', JSON.stringify(data).substring(0, 300));
 
-  const textBlock = data.content.find(b => b.type === 'text');
-  const content = textBlock ? textBlock.text : '';
+  // 尝试多种格式提取 AI 返回的文本
+  let content = '';
+  // 格式1: Anthropic 标准格式 { content: [{ type: 'text', text: '...' }] }
+  if (Array.isArray(data.content)) {
+    const textBlock = data.content.find(b => b.type === 'text');
+    if (textBlock?.text) content = textBlock.text;
+  }
+  // 格式2: OpenAI 兼容格式 { choices: [{ message: { content: '...' } }] }
+  if (!content && Array.isArray(data.choices)) {
+    content = data.choices[0]?.message?.content || data.choices[0]?.text || '';
+  }
+  // 格式3: 直接返回文本 { response: '...' } 或 { text: '...' }
+  if (!content) content = data.response || data.text || data.content?.toString() || '';
+  // 格式4: 如果 content 本身是字符串
+  if (!content && typeof data.content === 'string') content = data.content;
 
-  if (!content) throw new Error('AI returned empty response - check content structure');
+  if (!content) {
+    console.error('AI unknown response format:', JSON.stringify(data).substring(0, 1000));
+    throw new Error(`AI returned empty response - unknown format. Keys: ${Object.keys(data).join(', ')}`);
+  }
 
   let jsonStr = content;
   const codeMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
