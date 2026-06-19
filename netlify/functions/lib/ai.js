@@ -78,8 +78,16 @@ async function generateQuestions(chapter, existingStems, count = 3) {
   if (!content && typeof data.output === 'string') content = data.output;
 
   if (!content) {
-    console.error('AI unknown response format:', JSON.stringify(data).substring(0, 1000));
-    throw new Error(`AI returned empty response - unknown format. Keys: ${Object.keys(data).join(', ')}`);
+    const fullDump = JSON.stringify({
+      allKeys: Object.keys(data),
+      contentType: typeof data.content,
+      isArray: Array.isArray(data.content),
+      contentJSON: JSON.stringify(data.content).substring(0, 2000),
+      contentRaw: data.content,
+      firstBlock: Array.isArray(data.content) ? JSON.stringify(data.content[0]) : 'N/A',
+    });
+    console.error('AI unknown response format:', fullDump);
+    throw new Error(`AI response format unknown. Debug: ${fullDump.substring(0, 500)}`);
   }
 
   // 如果 content 已经是解析好的对象/数组，直接使用
