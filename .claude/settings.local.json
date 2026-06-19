@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm init *)",
+      "Bash(export PATH=\"/c/Users/lenovo/AppData/Roaming/TRAE SOLO CN/ModularData/ai-agent/vm/tools/node:$PATH\")",
+      "Bash(npm install *)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(node server.js)",
+      "Bash(node -e ' *)",
+      "Bash(curl -s http://localhost:3000/api/chapters)",
+      "Bash(powershell *)",
+      "Bash(curl *)",
+      "Bash(git config *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  }
+}

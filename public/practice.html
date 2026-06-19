@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>数学大冒险 - 练习</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;family=Quicksand:wght@700&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "primary": "#755563", "on-primary": "#ffffff",
+        "primary-container": "#ffd5e5", "on-primary-container": "#7a5a67",
+        "primary-fixed": "#ffd8e7", "primary-fixed-dim": "#e4bccb",
+        "on-primary-fixed": "#2c141f", "on-primary-fixed-variant": "#5c3e4b",
+        "secondary": "#416466", "on-secondary": "#ffffff",
+        "secondary-container": "#c4eaec", "on-secondary-container": "#476a6c",
+        "secondary-fixed": "#c4eaec", "secondary-fixed-dim": "#a8cdcf",
+        "on-secondary-fixed": "#002021", "on-secondary-fixed-variant": "#294c4e",
+        "tertiary": "#665f31", "on-tertiary": "#ffffff",
+        "tertiary-container": "#ebe1a8", "on-tertiary-container": "#6a6435",
+        "tertiary-fixed": "#ede4aa", "tertiary-fixed-dim": "#d1c890",
+        "on-tertiary-fixed": "#201c00", "on-tertiary-fixed-variant": "#4d471c",
+        "error": "#ba1a1a", "on-error": "#ffffff",
+        "error-container": "#ffdad6", "on-error-container": "#93000a",
+        "surface": "#f5faff", "surface-bright": "#f5faff",
+        "surface-dim": "#caddeb", "surface-variant": "#d2e5f3",
+        "surface-container": "#def0ff", "surface-container-low": "#eaf5ff",
+        "surface-container-lowest": "#ffffff", "surface-container-high": "#d8ebf9",
+        "surface-container-highest": "#d2e5f3", "surface-tint": "#755563",
+        "background": "#f5faff", "on-background": "#0b1d28",
+        "on-surface": "#0b1d28", "on-surface-variant": "#4e4448",
+        "outline": "#807478", "outline-variant": "#d2c3c7",
+        "inverse-surface": "#21323d", "inverse-primary": "#e4bccb",
+        "inverse-on-surface": "#e4f3ff"
+      },
+      borderRadius: { DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px" },
+      spacing: { "container-padding": "24px", base: "8px", "element-gap": "16px" },
+      fontFamily: {
+        "body-sm": ["Be Vietnam Pro"], "headline-md": ["Plus Jakarta Sans"],
+        "label-bold": ["Quicksand"], "display-lg-mobile": ["Plus Jakarta Sans"],
+        "body-math": ["Be Vietnam Pro"]
+      },
+      fontSize: {
+        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "700" }],
+        "label-bold": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700" }],
+        "display-lg-mobile": ["32px", { lineHeight: "40px", fontWeight: "800" }],
+        "body-math": ["18px", { lineHeight: "28px", fontWeight: "500" }]
+      }
+    }
+  }
+}
+</script>
+<style>
+body { background-color: #f5faff; min-height: max(884px, 100dvh); }
+.glow-shadow { box-shadow: 0 10px 30px rgba(117,85,99,0.08); }
+.neomorphic-light { box-shadow: inset 0 -3px 0 rgba(117,85,99,0.1); }
+.neomorphic-active:active { transform: translateY(2px); box-shadow: inset 0 -1px 0 rgba(117,85,99,0.1); }
+.option-selected { background-color: #ffd5e5 !important; border-color: #755563 !important; }
+</style>
+</head>
+<body class="bg-background text-on-background font-body-sm min-h-screen flex flex-col antialiased pb-24">
+
+<!-- Top Navigation -->
+<header class="w-full flex items-center justify-between px-container-padding py-4 sticky top-0 z-40 bg-background/80 backdrop-blur-md">
+  <a href="index.html" class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high text-primary hover:bg-surface-container-highest transition-colors">
+    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">arrow_back_ios_new</span>
+  </a>
+  <div class="flex-1 text-center">
+    <h1 id="chapter-title" class="font-headline-md text-primary tracking-tight">加载中...</h1>
+  </div>
+  <div class="w-10 h-10"></div>
+</header>
+
+<!-- Main Content -->
+<main class="flex-1 px-container-padding flex flex-col gap-6 w-full max-w-3xl mx-auto mt-4">
+  <!-- Progress Dots -->
+  <div id="progress-dots" class="flex justify-center items-center gap-2 mb-2"></div>
+
+  <!-- Loading State -->
+  <div id="loading-state" class="text-center py-16">
+    <span class="material-symbols-outlined text-5xl text-primary animate-spin">refresh</span>
+    <p class="mt-4 text-on-surface-variant">AI 正在出题，请稍候...</p>
+  </div>
+
+  <!-- Question Card (hidden initially) -->
+  <div id="question-card" class="bg-surface-container-lowest rounded-xl p-6 glow-shadow relative overflow-hidden hidden">
+    <div id="difficulty-tag" class="absolute top-4 right-4 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-bold text-label-bold">-</div>
+    <h2 class="font-headline-md text-on-surface mb-4 mt-2">请解答：</h2>
+    <div class="flex items-center justify-center bg-surface py-8 rounded-lg border-2 border-surface-variant/50 mb-6 px-4">
+      <p id="question-stem" class="font-body-math text-body-math text-primary text-center"></p>
+    </div>
+    <div id="options-container" class="flex flex-col gap-3"></div>
+  </div>
+
+  <!-- Result Card (hidden initially) -->
+  <div id="result-card" class="bg-surface-container-lowest rounded-xl p-6 glow-shadow hidden">
+    <div id="result-header" class="flex items-center gap-3 mb-3"></div>
+    <div id="result-explanation" class="bg-surface p-4 rounded-xl text-on-surface-variant font-body-sm"></div>
+  </div>
+
+  <!-- Actions -->
+  <div id="actions" class="flex flex-col gap-4 mt-2 hidden">
+    <button id="submit-btn" class="w-full bg-primary text-on-primary py-4 rounded-full font-headline-md neomorphic-light neomorphic-active transition-all hover:opacity-90">
+      提交答案
+    </button>
+    <div class="flex justify-between items-center bg-surface-container-high rounded-full p-2">
+      <button id="prev-btn" class="flex items-center gap-2 px-4 py-2 text-primary font-label-bold text-label-bold hover:bg-surface-variant rounded-full transition-colors opacity-50 cursor-not-allowed">
+        <span class="material-symbols-outlined text-sm">chevron_left</span> 上一题
+      </button>
+      <span id="counter" class="font-label-bold text-label-bold text-on-surface-variant">1 / 5</span>
+      <button id="next-btn" class="flex items-center gap-2 px-4 py-2 text-primary font-label-bold text-label-bold hover:bg-surface-variant rounded-full transition-colors">
+        下一题 <span class="material-symbols-outlined text-sm">chevron_right</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div id="error-state" class="text-center py-16 hidden">
+    <span class="material-symbols-outlined text-5xl text-error">error</span>
+    <p id="error-msg" class="mt-4 text-error"></p>
+    <a href="index.html" class="mt-4 inline-block px-6 py-2 bg-primary text-on-primary rounded-full font-label-bold">返回首页</a>
+  </div>
+
+  <!-- Panda Tip -->
+  <div id="panda-tip" class="mt-4 bg-tertiary-container text-on-tertiary-container rounded-xl p-4 flex items-start gap-4 glow-shadow hidden">
+    <div class="w-12 h-12 rounded-full bg-surface flex items-center justify-center shrink-0 border-2 border-tertiary text-2xl">🐼</div>
+    <div>
+      <h3 class="font-bold mb-1">熊猫说：</h3>
+      <p id="panda-msg" class="font-body-sm opacity-90"></p>
+    </div>
+  </div>
+</main>
+
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface border-t border-surface-variant/30 shadow-[0_-10px_30px_rgba(117,85,99,0.05)] rounded-t-lg">
+  <a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-container-high rounded-full active:scale-90 transition-all" href="index.html">
+    <span class="material-symbols-outlined text-label-bold">home_app_logo</span>
+    <span class="font-label-bold text-label-bold mt-1">首页</span>
+  </a>
+  <a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-6 py-2 transition-all active:scale-90" href="#">
+    <span class="material-symbols-outlined text-label-bold" style="font-variation-settings:'FILL' 1">auto_stories</span>
+    <span class="font-label-bold text-label-bold mt-1">学习</span>
+  </a>
+  <a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-container-high rounded-full active:scale-90 transition-all" href="wrong.html">
+    <span class="material-symbols-outlined text-label-bold">menu_book</span>
+    <span class="font-label-bold text-label-bold mt-1">错题</span>
+  </a>
+</nav>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const chapterId = parseInt(params.get('chapter')) || parseInt(localStorage.getItem('lastChapter')) || 1;
+localStorage.setItem('lastChapter', chapterId);
+const DIFF_LABELS = { easy: '简单', medium: '中等', hard: '困难' };
+const PANDA_TIPS = {
+  correct: ['太棒了！继续保持！', '答对啦！你真聪明！', '完美！这道题难不倒你！'],
+  wrong: ['别灰心，再想想看~', '错了也没关系，重要的是学会！', '加油，下次一定能答对！']
+};
+
+let questions = [];
+let currentIndex = 0;
+let selectedAnswer = null;
+let answered = false;
+
+function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+// Render LaTeX math in a string to HTML
+function renderMath(text) {
+  if (!text) return '';
+  let html = text;
+  // Replace \( ... \) inline math
+  html = html.replace(/\\\((.+?)\\\)/g, (_, tex) => {
+    try { return katex.renderToString(tex, { throwOnError: false, displayMode: false }); }
+    catch { return tex; }
+  });
+  // Replace $$ ... $$ display math
+  html = html.replace(/\$\$(.+?)\$\$/g, (_, tex) => {
+    try { return katex.renderToString(tex, { throwOnError: false, displayMode: true }); }
+    catch { return tex; }
+  });
+  // Replace $ ... $ inline math
+  html = html.replace(/\$(.+?)\$/g, (_, tex) => {
+    try { return katex.renderToString(tex, { throwOnError: false, displayMode: false }); }
+    catch { return tex; }
+  });
+  // Replace common LaTeX patterns without delimiters
+  html = html.replace(/(\\(?:lim|frac|int|sum|sqrt|sin|cos|tan|ln|log|exp|limsup|liminf|infty|partial|nabla|alpha|beta|gamma|delta|epsilon|theta|lambda|mu|pi|sigma|omega|to|rightarrow|Rightarrow|leq|geq|neq|approx|equiv|subset|supset|cup|cap|in|notin|forall|exists|cdot|times|div|pm|mp|oplus|otimes|perp|parallel|angle|triangle|quad|qquad|overline|underline|hat|bar|vec|dot|ddot|tilde)[^ ,;。、]*)/g, (match) => {
+    // Only render if it looks like a complete LaTeX expression
+    if (match.includes('\\') && (match.includes('{') || match.includes('_') || match.includes('^'))) {
+      try { return katex.renderToString(match, { throwOnError: false, displayMode: false }); }
+      catch { return match; }
+    }
+    return match;
+  });
+  return html;
+}
+
+async function init() {
+  try {
+    const chRes = await fetch(`/api/chapters/${chapterId}`);
+    if (chRes.ok) {
+      const ch = await chRes.json();
+      document.getElementById('chapter-title').textContent = `第${ch.id}章: ${ch.title}`;
+    }
+
+    const res = await fetch('/api/questions/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chapterId, count: 3, difficulty: 'medium' })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || '出题失败');
+    }
+
+    questions = await res.json();
+    if (!questions.length) throw new Error('未能生成题目');
+
+    document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('question-card').classList.remove('hidden');
+    document.getElementById('actions').classList.remove('hidden');
+    document.getElementById('panda-tip').classList.remove('hidden');
+
+    renderDots();
+    renderQuestion();
+  } catch (err) {
+    document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('error-state').classList.remove('hidden');
+    document.getElementById('error-msg').textContent = err.message;
+  }
+}
+
+function renderDots() {
+  const container = document.getElementById('progress-dots');
+  container.innerHTML = questions.map((_, i) =>
+    `<div class="w-3 h-3 rounded-full transition-all ${i === currentIndex ? 'bg-primary scale-125' : 'bg-surface-variant'}"></div>`
+  ).join('');
+}
+
+function renderQuestion() {
+  const q = questions[currentIndex];
+  selectedAnswer = null;
+  answered = false;
+
+  document.getElementById('difficulty-tag').textContent = DIFF_LABELS[q.difficulty] || q.difficulty;
+  document.getElementById('question-stem').innerHTML = renderMath(q.stem);
+  document.getElementById('counter').textContent = `${currentIndex + 1} / ${questions.length}`;
+
+  const labels = ['A', 'B', 'C', 'D'];
+  const container = document.getElementById('options-container');
+  container.innerHTML = q.options.map((opt, i) => `
+    <button class="w-full text-left p-4 rounded-xl border-2 border-outline-variant text-on-surface font-body-math text-body-math hover:bg-secondary-container/20 transition-all focus:outline-none focus:ring-2 focus:ring-primary flex items-center group option-btn" data-index="${i}">
+      <span class="option-label w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center mr-4 font-label-bold group-hover:bg-secondary-fixed group-hover:text-on-secondary-fixed transition-colors">${labels[i]}</span>
+      <span class="option-text">${renderMath(opt)}</span>
+    </button>
+  `).join('');
+
+  // Bind option clicks
+  container.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (answered) return;
+      container.querySelectorAll('.option-btn').forEach(b => {
+        b.classList.remove('option-selected');
+        b.querySelector('.option-label').classList.remove('bg-primary', 'text-on-primary');
+        b.querySelector('.option-label').classList.add('bg-surface-variant', 'text-on-surface-variant');
+      });
+      btn.classList.add('option-selected');
+      btn.querySelector('.option-label').classList.add('bg-primary', 'text-on-primary');
+      selectedAnswer = parseInt(btn.dataset.index);
+    });
+  });
+
+  // Reset result & navigation
+  document.getElementById('result-card').classList.add('hidden');
+  document.getElementById('submit-btn').textContent = '提交答案';
+  document.getElementById('submit-btn').disabled = false;
+  document.getElementById('submit-btn').classList.remove('opacity-50');
+  document.getElementById('prev-btn').classList.toggle('opacity-50', currentIndex === 0);
+  document.getElementById('prev-btn').classList.toggle('cursor-not-allowed', currentIndex === 0);
+
+  renderDots();
+}
+
+async function submitAnswer() {
+  if (selectedAnswer === null || answered) return;
+  answered = true;
+
+  const q = questions[currentIndex];
+  const isCorrect = selectedAnswer === q.answer;
+
+  // Highlight correct/wrong
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((btn, i) => {
+    btn.style.pointerEvents = 'none';
+    if (i === q.answer) {
+      btn.style.borderColor = '#4caf50';
+      btn.style.backgroundColor = 'rgba(76,175,80,0.1)';
+    }
+    if (i === selectedAnswer && !isCorrect) {
+      btn.style.borderColor = '#ba1a1a';
+      btn.style.backgroundColor = 'rgba(186,26,26,0.1)';
+    }
+  });
+
+  // Show result card
+  const resultCard = document.getElementById('result-card');
+  resultCard.classList.remove('hidden');
+  const header = document.getElementById('result-header');
+  header.innerHTML = isCorrect
+    ? '<span class="material-symbols-outlined text-green-600" style="font-variation-settings:FILL 1">check_circle</span><span class="font-bold text-green-600">答对了！</span>'
+    : '<span class="material-symbols-outlined text-error" style="font-variation-settings:FILL 1">cancel</span><span class="font-bold text-error">答错了</span>';
+  document.getElementById('result-explanation').innerHTML = renderMath(q.explanation);
+
+  // Panda tip
+  document.getElementById('panda-msg').textContent = pickRandom(isCorrect ? PANDA_TIPS.correct : PANDA_TIPS.wrong);
+
+  // Record wrong answer
+  if (!isCorrect) {
+    await fetch('/api/wrong-answers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ questionId: q.id, userAnswer: selectedAnswer })
+    });
+  }
+
+  // Update submit button
+  document.getElementById('submit-btn').textContent = currentIndex < questions.length - 1 ? '下一题 →' : '完成';
+  document.getElementById('submit-btn').onclick = () => {
+    if (currentIndex < questions.length - 1) {
+      currentIndex++;
+      renderQuestion();
+    } else {
+      window.location.href = 'index.html';
+    }
+  };
+}
+
+document.getElementById('submit-btn').addEventListener('click', () => {
+  if (!answered) {
+    submitAnswer();
+  }
+});
+
+document.getElementById('next-btn').addEventListener('click', () => {
+  if (currentIndex < questions.length - 1) {
+    currentIndex++;
+    renderQuestion();
+  }
+});
+
+document.getElementById('prev-btn').addEventListener('click', () => {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderQuestion();
+  }
+});
+
+init();
+</script>
+</body>
+</html>

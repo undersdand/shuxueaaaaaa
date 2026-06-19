@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>数学大冒险 - 首页</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;family=Quicksand:wght@700&amp;display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "primary": "#755563",
+        "on-primary": "#ffffff",
+        "primary-container": "#ffd5e5",
+        "on-primary-container": "#7a5a67",
+        "primary-fixed": "#ffd8e7",
+        "primary-fixed-dim": "#e4bccb",
+        "on-primary-fixed": "#2c141f",
+        "on-primary-fixed-variant": "#5c3e4b",
+        "secondary": "#416466",
+        "on-secondary": "#ffffff",
+        "secondary-container": "#c4eaec",
+        "on-secondary-container": "#476a6c",
+        "secondary-fixed": "#c4eaec",
+        "secondary-fixed-dim": "#a8cdcf",
+        "on-secondary-fixed": "#002021",
+        "on-secondary-fixed-variant": "#294c4e",
+        "tertiary": "#665f31",
+        "on-tertiary": "#ffffff",
+        "tertiary-container": "#ebe1a8",
+        "on-tertiary-container": "#6a6435",
+        "tertiary-fixed": "#ede4aa",
+        "tertiary-fixed-dim": "#d1c890",
+        "on-tertiary-fixed": "#201c00",
+        "on-tertiary-fixed-variant": "#4d471c",
+        "error": "#ba1a1a",
+        "on-error": "#ffffff",
+        "error-container": "#ffdad6",
+        "on-error-container": "#93000a",
+        "surface": "#f5faff",
+        "surface-bright": "#f5faff",
+        "surface-dim": "#caddeb",
+        "surface-variant": "#d2e5f3",
+        "surface-container": "#def0ff",
+        "surface-container-low": "#eaf5ff",
+        "surface-container-lowest": "#ffffff",
+        "surface-container-high": "#d8ebf9",
+        "surface-container-highest": "#d2e5f3",
+        "surface-tint": "#755563",
+        "background": "#f5faff",
+        "on-background": "#0b1d28",
+        "on-surface": "#0b1d28",
+        "on-surface-variant": "#4e4448",
+        "outline": "#807478",
+        "outline-variant": "#d2c3c7",
+        "inverse-surface": "#21323d",
+        "inverse-primary": "#e4bccb",
+        "inverse-on-surface": "#e4f3ff"
+      },
+      borderRadius: { DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px" },
+      spacing: { "radius-outer": "24px", base: "8px", "section-margin": "48px", "radius-inner": "12px", "element-gap": "16px", "container-padding": "24px" },
+      fontFamily: {
+        "label-bold": ["Quicksand"],
+        "body-sm": ["Be Vietnam Pro"],
+        "display-lg": ["Plus Jakarta Sans"],
+        "headline-md": ["Plus Jakarta Sans"],
+        "body-math": ["Be Vietnam Pro"],
+        "display-lg-mobile": ["Plus Jakarta Sans"]
+      },
+      fontSize: {
+        "label-bold": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700" }],
+        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+        "display-lg": ["40px", { lineHeight: "52px", letterSpacing: "-0.02em", fontWeight: "800" }],
+        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "700" }],
+        "body-math": ["18px", { lineHeight: "28px", fontWeight: "500" }],
+        "display-lg-mobile": ["32px", { lineHeight: "40px", fontWeight: "800" }]
+      }
+    }
+  }
+}
+</script>
+<style>
+body {
+  background-color: #f5faff;
+  background-image: radial-gradient(at 0% 0%, hsla(339, 100%, 93%, 0.4) 0px, transparent 50%),
+                    radial-gradient(at 100% 100%, hsla(202, 100%, 88%, 0.4) 0px, transparent 50%);
+  background-attachment: fixed;
+  margin: 0; padding: 0; overflow-x: hidden;
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+.bouncy-press:active { transform: scale(0.95) translateY(2px); box-shadow: 0 0 0 rgba(0,0,0,0); }
+.float-animation { animation: float 6s ease-in-out infinite; }
+.float-animation-delayed { animation: float 7s ease-in-out infinite 1s; }
+.card-float { animation: gentleFloat 4s ease-in-out infinite; }
+.card-float:nth-child(even) { animation-delay: 2s; }
+@keyframes float { 0%{transform:translateY(0)} 50%{transform:translateY(-15px)} 100%{transform:translateY(0)} }
+@keyframes gentleFloat { 0%{transform:translateY(0)} 50%{transform:translateY(-8px)} 100%{transform:translateY(0)} }
+.glass-card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.5);
+  box-shadow: 0 20px 40px rgba(117,85,99,0.05), inset 0 -2px 0 rgba(255,255,255,0.8);
+}
+.progress-bubble { width:12px; height:12px; border-radius:50%; display:inline-block; margin-right:4px; }
+.progress-bubble.active { background-color:#ffd5e5; box-shadow:0 0 8px rgba(255,213,229,0.6); }
+.progress-bubble.inactive { background-color:#def0ff; }
+</style>
+</head>
+<body class="text-on-surface pb-32">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-container-padding py-base w-full sticky top-0 z-40 bg-surface-bright/80 backdrop-blur-md shadow-[0px_20px_40px_rgba(117,85,99,0.08)]">
+  <div class="w-10"></div>
+  <h1 class="font-display-lg-mobile text-display-lg-mobile text-primary tracking-tight">数学大冒险</h1>
+  <button class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container hover:scale-105 transition-transform shadow-sm">
+    <img alt="Profile" class="w-full h-full object-cover" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23ffd5e5'/><text x='50' y='60' text-anchor='middle' font-size='40'>🐼</text></svg>"/>
+  </button>
+</header>
+
+<!-- Main Content -->
+<main class="px-container-padding pt-6 flex flex-col gap-element-gap relative z-10">
+  <!-- Hero Section -->
+  <section class="flex flex-col items-center mb-8">
+    <div class="relative w-48 h-48 mb-4 float-animation-delayed">
+      <div class="w-full h-full flex items-center justify-center text-8xl">🐼</div>
+    </div>
+    <div class="glass-card rounded-xl p-6 w-full text-center relative z-20 card-float">
+      <h2 class="font-headline-md text-headline-md text-primary mb-2">准备好学习了吗？</h2>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">选择下方章节开始练习吧！</p>
+    </div>
+  </section>
+
+  <!-- Chapters -->
+  <section id="chapters-container" class="flex flex-col gap-6 w-full max-w-[1100px] mx-auto">
+    <!-- Loading state -->
+    <div class="text-center py-12 text-on-surface-variant">
+      <span class="material-symbols-outlined text-4xl animate-spin">refresh</span>
+      <p class="mt-2">加载中...</p>
+    </div>
+  </section>
+</main>
+
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-surface-container-low/90 shadow-[0px_-10px_40px_rgba(117,85,99,0.05)] backdrop-blur-lg rounded-t-xl md:hidden">
+  <a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-6 py-2 transition-all duration-300 active:scale-90" href="index.html">
+    <span class="material-symbols-outlined mb-1" style="font-variation-settings:'FILL' 1">home_app_logo</span>
+    <span class="font-label-bold text-label-bold">首页</span>
+  </a>
+  <a class="flex flex-col items-center justify-center text-on-secondary-container opacity-70 hover:bg-primary-fixed-dim/20 rounded-2xl px-6 py-2 transition-all duration-300 active:scale-90" href="#" onclick="window.location.href='practice.html?chapter='+(localStorage.getItem('lastChapter')||'1')">
+    <span class="material-symbols-outlined mb-1">auto_stories</span>
+    <span class="font-label-bold text-label-bold">学习</span>
+  </a>
+  <a class="flex flex-col items-center justify-center text-on-secondary-container opacity-70 hover:bg-primary-fixed-dim/20 rounded-2xl px-6 py-2 transition-all duration-300 active:scale-90" href="wrong.html">
+    <span class="material-symbols-outlined mb-1">edit_document</span>
+    <span class="font-label-bold text-label-bold">错题</span>
+  </a>
+</nav>
+
+<script>
+const ICON_COLORS = {
+  primary: { bg: 'bg-surface-container', text: 'text-primary' },
+  secondary: { bg: 'bg-surface-container', text: 'text-secondary' },
+  tertiary: { bg: 'bg-surface-container', text: 'text-tertiary' }
+};
+
+async function loadHomepage() {
+  try {
+    const [chaptersRes, progressRes] = await Promise.all([
+      fetch('/api/chapters'),
+      fetch('/api/progress')
+    ]);
+    const chapters = await chaptersRes.json();
+    const progress = await progressRes.json();
+
+    const container = document.getElementById('chapters-container');
+    container.innerHTML = chapters.map(chapter => {
+      const colorSet = ICON_COLORS[chapter.color] || ICON_COLORS.tertiary;
+      return `
+        <a href="practice.html?chapter=${chapter.id}" class="glass-card rounded-xl p-6 flex flex-col gap-4 relative overflow-hidden group bouncy-press cursor-pointer card-float no-underline">
+          <div class="absolute top-0 right-0 w-32 h-32 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500" style="background-color: ${chapter.color === 'primary' ? 'rgba(255,213,229,0.2)' : chapter.color === 'secondary' ? 'rgba(196,234,236,0.2)' : 'rgba(235,225,168,0.2)'}"></div>
+          <div class="flex justify-between items-start">
+            <div class="w-16 h-16 rounded-full ${colorSet.bg} flex items-center justify-center shadow-inner float-animation">
+              <span class="material-symbols-outlined text-[32px] ${colorSet.text}" style="font-variation-settings:'FILL' 1">${chapter.icon}</span>
+            </div>
+          </div>
+          <div>
+            <h3 class="font-headline-md text-[20px] text-on-surface mb-1">第${chapter.id}章：${chapter.title}</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">核心考点：${chapter.topics.join('、')}</p>
+          </div>
+        </a>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error('Failed to load homepage:', err);
+    document.getElementById('chapters-container').innerHTML =
+      '<div class="text-center py-12 text-error">加载失败，请刷新重试</div>';
+  }
+}
+
+loadHomepage();
+</script>
+</body>
+</html>

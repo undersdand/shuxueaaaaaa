@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>数学大冒险 - 我的错题本</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;family=Quicksand:wght@700&amp;display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "primary": "#755563", "on-primary": "#ffffff",
+        "primary-container": "#ffd5e5", "on-primary-container": "#7a5a67",
+        "primary-fixed": "#ffd8e7", "primary-fixed-dim": "#e4bccb",
+        "on-primary-fixed": "#2c141f", "on-primary-fixed-variant": "#5c3e4b",
+        "secondary": "#416466", "on-secondary": "#ffffff",
+        "secondary-container": "#c4eaec", "on-secondary-container": "#476a6c",
+        "secondary-fixed": "#c4eaec", "secondary-fixed-dim": "#a8cdcf",
+        "on-secondary-fixed": "#002021", "on-secondary-fixed-variant": "#294c4e",
+        "tertiary": "#665f31", "on-tertiary": "#ffffff",
+        "tertiary-container": "#ebe1a8", "on-tertiary-container": "#6a6435",
+        "tertiary-fixed": "#ede4aa", "tertiary-fixed-dim": "#d1c890",
+        "on-tertiary-fixed": "#201c00", "on-tertiary-fixed-variant": "#4d471c",
+        "error": "#ba1a1a", "on-error": "#ffffff",
+        "error-container": "#ffdad6", "on-error-container": "#93000a",
+        "surface": "#f5faff", "surface-bright": "#f5faff",
+        "surface-dim": "#caddeb", "surface-variant": "#d2e5f3",
+        "surface-container": "#def0ff", "surface-container-low": "#eaf5ff",
+        "surface-container-lowest": "#ffffff", "surface-container-high": "#d8ebf9",
+        "surface-container-highest": "#d2e5f3", "surface-tint": "#755563",
+        "background": "#f5faff", "on-background": "#0b1d28",
+        "on-surface": "#0b1d28", "on-surface-variant": "#4e4448",
+        "outline": "#807478", "outline-variant": "#d2c3c7",
+        "inverse-surface": "#21323d", "inverse-primary": "#e4bccb",
+        "inverse-on-surface": "#e4f3ff"
+      },
+      borderRadius: { DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px" },
+      spacing: { "container-padding": "24px", base: "8px", "section-margin": "48px", "element-gap": "16px" },
+      fontFamily: {
+        "body-sm": ["Be Vietnam Pro"], "headline-md": ["Plus Jakarta Sans"],
+        "label-bold": ["Quicksand"], "display-lg-mobile": ["Plus Jakarta Sans"],
+        "body-math": ["Be Vietnam Pro"]
+      },
+      fontSize: {
+        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "700" }],
+        "headline-md-mobile": ["20px", { lineHeight: "28px", fontWeight: "700" }],
+        "label-bold": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700" }],
+        "display-lg-mobile": ["32px", { lineHeight: "40px", fontWeight: "800" }],
+        "body-math": ["18px", { lineHeight: "28px", fontWeight: "500" }]
+      }
+    }
+  }
+}
+</script>
+<style>
+body { background-color: #f5faff; color: #0b1d28; }
+.animate-float { animation: float 4s ease-in-out infinite; }
+@keyframes float { 0%{transform:translateY(0)} 50%{transform:translateY(-10px)} 100%{transform:translateY(0)} }
+.glow-shadow { box-shadow: 0 10px 30px rgba(117,85,99,0.08); }
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+</head>
+<body class="bg-background text-on-background font-body-sm pb-[100px]">
+
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-container-padding py-base w-full sticky top-0 z-40 bg-surface-bright/80 backdrop-blur-md shadow-[0px_20px_40px_rgba(117,85,99,0.08)]">
+  <a href="index.html" class="w-10 h-10 flex items-center justify-center rounded-full text-primary hover:scale-105 transition-transform active:scale-95 bg-surface-container-low">
+    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">menu</span>
+  </a>
+  <h1 class="font-headline-md text-headline-md-mobile text-primary">我的错题本</h1>
+  <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container bg-white shadow-sm">
+    <div class="w-full h-full flex items-center justify-center text-2xl bg-primary-container">🐼</div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="px-container-padding pt-6 space-y-section-margin max-w-lg mx-auto">
+  <!-- Summary Section -->
+  <section class="relative bg-white rounded-[2rem] p-6 shadow-[0px_20px_40px_rgba(117,85,99,0.05)] border border-surface-variant flex flex-col gap-6">
+    <div class="flex items-center gap-4">
+      <div class="w-24 h-24 rounded-full overflow-hidden shrink-0 animate-float shadow-lg border-4 border-surface-container-low bg-white flex items-center justify-center text-5xl">🐼</div>
+      <div class="flex-1">
+        <div class="bg-surface-container-high rounded-2xl p-4 relative text-on-surface-variant">
+          <div class="absolute left-[-8px] top-6 w-4 h-4 bg-surface-container-high transform rotate-45"></div>
+          <p id="panda-greeting" class="font-body-sm font-medium">加载中...</p>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-primary-container/30 rounded-[1.5rem] p-4 flex flex-col items-center justify-center gap-1 hover:bg-primary-container/50 transition-colors">
+        <span id="total-wrong" class="text-3xl font-display-lg-mobile text-primary">-</span>
+        <span class="text-xs font-label-bold text-on-primary-container">总错题数</span>
+      </div>
+      <div class="bg-secondary-container/30 rounded-[1.5rem] p-4 flex flex-col items-center justify-center gap-1 hover:bg-secondary-container/50 transition-colors">
+        <span id="review-count" class="text-3xl font-display-lg-mobile text-secondary">-</span>
+        <span class="text-xs font-label-bold text-on-secondary-container">待复习</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chapter Distribution -->
+  <section class="space-y-4">
+    <h2 class="font-headline-md text-headline-md-mobile text-on-background flex items-center gap-2">
+      <span class="material-symbols-outlined text-secondary" style="font-variation-settings:'FILL' 1">analytics</span>
+      知识点分布
+    </h2>
+    <div id="chapter-dist" class="flex overflow-x-auto hide-scrollbar gap-3 pb-4">
+      <!-- Populated by JS -->
+    </div>
+  </section>
+
+  <!-- Wrong Answer List -->
+  <section class="space-y-4">
+    <h2 class="font-headline-md text-headline-md-mobile text-on-background flex items-center gap-2">
+      <span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1">menu_book</span>
+      待突破难关
+    </h2>
+    <div id="wrong-list" class="space-y-4">
+      <!-- Populated by JS -->
+    </div>
+    <div id="empty-state" class="text-center py-12 hidden">
+      <span class="material-symbols-outlined text-5xl text-secondary opacity-40">check_circle</span>
+      <p class="mt-4 text-on-surface-variant">暂无错题，继续保持！</p>
+    </div>
+  </section>
+</main>
+
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-surface-container-low/90 rounded-t-xl shadow-[0px_-10px_40px_rgba(117,85,99,0.05)] backdrop-blur-lg">
+  <a class="flex flex-col items-center justify-center text-on-secondary-container opacity-70 hover:bg-primary-fixed-dim/20 rounded-xl px-4 py-1.5 active:scale-90 transition-all" href="index.html">
+    <span class="material-symbols-outlined mb-1">home_app_logo</span>
+    <span class="font-label-bold text-label-bold">首页</span>
+  </a>
+  <a class="flex flex-col items-center justify-center text-on-secondary-container opacity-70 hover:bg-primary-fixed-dim/20 rounded-xl px-4 py-1.5 active:scale-90 transition-all" href="#" onclick="window.location.href='practice.html?chapter='+(localStorage.getItem('lastChapter')||'1')">
+    <span class="material-symbols-outlined mb-1">auto_stories</span>
+    <span class="font-label-bold text-label-bold">学习</span>
+  </a>
+  <a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-4 py-1.5 transition-all active:scale-90" href="wrong.html">
+    <span class="material-symbols-outlined mb-1" style="font-variation-settings:'FILL' 1">menu_book</span>
+    <span class="font-label-bold text-label-bold">错题</span>
+  </a>
+</nav>
+
+<script>
+// Render LaTeX math in a string to HTML
+function renderMath(text) {
+  if (!text) return '';
+  let html = text;
+  html = html.replace(/\\\((.+?)\\\)/g, (_, tex) => {
+    try { return katex.renderToString(tex, { throwOnError: false, displayMode: false }); }
+    catch { return tex; }
+  });
+  html = html.replace(/\$\$(.+?)\$\$/g, (_, tex) => {
+    try { return katex.renderToString(tex, { throwOnError: false, displayMode: true }); }
+    catch { return tex; }
+  });
+  html = html.replace(/\$(.+?)\$/g, (_, tex) => {
+    try { return katex.renderToString(tex, { throwOnError: false, displayMode: false }); }
+    catch { return tex; }
+  });
+  html = html.replace(/(\\(?:lim|frac|int|sum|sqrt|sin|cos|tan|ln|log|exp|limsup|liminf|infty|partial|nabla|alpha|beta|gamma|delta|epsilon|theta|lambda|mu|pi|sigma|omega|to|rightarrow|Rightarrow|leq|geq|neq|approx|equiv|subset|supset|cup|cap|in|notin|forall|exists|cdot|times|div|pm|mp|oplus|otimes|perp|parallel|angle|triangle|quad|qquad|overline|underline|hat|bar|vec|dot|ddot|tilde)[^ ,;。、]*)/g, (match) => {
+    if (match.includes('\\') && (match.includes('{') || match.includes('_') || match.includes('^'))) {
+      try { return katex.renderToString(match, { throwOnError: false, displayMode: false }); }
+      catch { return match; }
+    }
+    return match;
+  });
+  return html;
+}
+
+const DIFF_COLORS = { easy: 'bg-secondary-container text-on-secondary-container', medium: 'bg-tertiary-container text-on-tertiary-container', hard: 'bg-error-container text-on-error-container' };
+const DIFF_LABELS = { easy: '简单', medium: '中等', hard: '困难' };
+
+async function loadWrongPage() {
+  try {
+    const [wrongRes, statsRes, chaptersRes] = await Promise.all([
+      fetch('/api/wrong-answers'),
+      fetch('/api/wrong-answers/stats'),
+      fetch('/api/chapters')
+    ]);
+
+    const wrongAnswers = await wrongRes.json();
+    const stats = await statsRes.json();
+    const chapters = await chaptersRes.json();
+
+    // Load all questions to resolve questionId references
+    const allQuestions = [];
+    for (const ch of chapters) {
+      const qRes = await fetch(`/api/questions/${ch.id}`);
+      const qs = await qRes.json();
+      allQuestions.push(...qs);
+    }
+
+    // Update stats
+    document.getElementById('total-wrong').textContent = stats.total;
+    document.getElementById('review-count').textContent = wrongAnswers.filter(w => !w.reviewed).length;
+
+    // Panda greeting
+    const greetings = [
+      `你已经收集了 ${stats.total} 道错题，继续加油！`,
+      stats.total === 0 ? '目前没有错题，太棒了！' : `还有 ${wrongAnswers.filter(w => !w.reviewed).length} 道题需要复习哦~`
+    ];
+    document.getElementById('panda-greeting').textContent = greetings[stats.total > 0 ? 0 : 1];
+
+    // Chapter distribution
+    const distContainer = document.getElementById('chapter-dist');
+    const maxCount = Math.max(1, ...Object.values(stats.byChapter));
+    distContainer.innerHTML = chapters.map(ch => {
+      const count = stats.byChapter[ch.id] || 0;
+      const scale = count > 0 ? Math.max(0.1, count / maxCount) : 0.05;
+      return `
+        <div class="shrink-0 bg-white rounded-2xl p-4 shadow-sm border border-surface-variant w-32 flex flex-col gap-2 relative overflow-hidden">
+          <div class="absolute bottom-0 left-0 h-1 w-full origin-left transition-transform" style="background-color: ${ch.color === 'primary' ? '#755563' : ch.color === 'secondary' ? '#416466' : '#665f31'}; transform: scaleX(${scale})"></div>
+          <span class="text-xs font-label-bold text-outline">第${ch.id}章</span>
+          <span class="font-body-sm font-bold truncate">${ch.title.substring(0, 6)}</span>
+          <span class="text-lg font-bold mt-1" style="color: ${ch.color === 'primary' ? '#755563' : ch.color === 'secondary' ? '#416466' : '#665f31'}">${count}题</span>
+        </div>
+      `;
+    }).join('');
+
+    // Wrong answer list
+    const listContainer = document.getElementById('wrong-list');
+    const emptyState = document.getElementById('empty-state');
+
+    if (wrongAnswers.length === 0) {
+      emptyState.classList.remove('hidden');
+      listContainer.classList.add('hidden');
+    } else {
+      emptyState.classList.add('hidden');
+      listContainer.innerHTML = wrongAnswers.map(wa => {
+        const q = allQuestions.find(q => q.id === wa.questionId);
+        if (!q) return '';
+        const ch = chapters.find(c => c.id === q.chapterId);
+        const diffClass = DIFF_COLORS[q.difficulty] || DIFF_COLORS.medium;
+        const diffLabel = DIFF_LABELS[q.difficulty] || q.difficulty;
+        const labels = ['A', 'B', 'C', 'D'];
+
+        return `
+          <div class="bg-white rounded-[2rem] p-6 shadow-[0px_10px_30px_rgba(117,85,99,0.06)] border border-surface-variant relative ml-4">
+            <div class="absolute top-4 right-4 ${diffClass} text-[10px] font-bold px-3 py-1 rounded-full">${diffLabel}</div>
+            <p class="text-xs text-outline mb-1">第${q.chapterId}章${ch ? ' · ' + ch.title.substring(0, 6) : ''}</p>
+            <p class="text-xs text-outline mb-3">考察点: ${q.topic || '-'}</p>
+            <div class="bg-surface p-4 rounded-xl mb-4">
+              <p class="font-body-math text-body-math text-on-surface">${renderMath(q.stem)}</p>
+            </div>
+            <div class="flex items-start gap-3 mb-4 p-3 bg-error-container/20 rounded-xl border border-error-container/50">
+              <span class="material-symbols-outlined text-error mt-0.5" style="font-variation-settings:'FILL' 1">cancel</span>
+              <div>
+                <p class="text-xs text-error font-bold mb-1">你的答案</p>
+                <p class="font-body-math text-body-math text-on-surface-variant">${labels[wa.userAnswer]}. ${renderMath(q.options[wa.userAnswer] || '-')}</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 mb-6 p-3 bg-green-50 rounded-xl border border-green-200">
+              <span class="material-symbols-outlined text-green-600 mt-0.5" style="font-variation-settings:'FILL' 1">check_circle</span>
+              <div>
+                <p class="text-xs text-green-700 font-bold mb-1">正确答案</p>
+                <p class="font-body-math text-body-math text-on-surface-variant">${labels[wa.correctAnswer]}. ${renderMath(q.options[wa.correctAnswer] || '-')}</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="deleteWrong('${wa.id}')" class="flex-1 bg-white border-2 border-primary text-primary font-bold py-3 rounded-full hover:bg-primary/5 transition-colors active:scale-[0.98] shadow-sm flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-sm">check</span> 已掌握
+              </button>
+              <a href="practice.html?chapter=${q.chapterId}" class="flex-1 bg-primary text-white font-bold py-3 rounded-full hover:bg-primary/90 transition-colors active:scale-[0.98] shadow-[0_4px_12px_rgba(117,85,99,0.2)] flex items-center justify-center gap-2 no-underline">
+                <span class="material-symbols-outlined text-sm">edit</span> 再试一次
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  } catch (err) {
+    console.error('Failed to load wrong answers:', err);
+    document.getElementById('panda-greeting').textContent = '加载失败，请刷新重试';
+  }
+}
+
+async function deleteWrong(id) {
+  try {
+    await fetch(`/api/wrong-answers/${id}`, { method: 'DELETE' });
+    loadWrongPage(); // Reload
+  } catch (err) {
+    console.error('Failed to delete:', err);
+  }
+}
+
+loadWrongPage();
+</script>
+</body>
+</html>
