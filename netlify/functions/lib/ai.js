@@ -42,25 +42,39 @@ async function generateQuestions(chapter, existingStems, count = 3) {
 
   // 尝试多种格式提取 AI 返回的文本内容
   let content = '';
+
   // 格式1: Anthropic 标准格式 { content: [{ type: 'text', text: '...' }] }
   if (Array.isArray(data.content)) {
+    // 先找 type='text' 的块
     const textBlock = data.content.find(b => b.type === 'text');
-    if (textBlock?.text) content = textBlock.text;
+    if (textBlock && textBlock.text !== undefined && textBlock.text !== null) {
+      content = textBlock.text;
+    }
+    // 如果没找到，取第一个非空块
+    if (!content) {
+      const firstBlock = data.content.find(b => b.text || b.content || b.value);
+      if (firstBlock) content = firstBlock.text || firstBlock.content || firstBlock.value || '';
+    }
   }
-  // 格式2: OpenAI 兼容格式 { choices: [{ message: { content: '...' } }] }
+  // 格式2: content 是对象且有 text 字段
+  if (!content && data.content && typeof data.content === 'object') {
+    if (typeof data.content.text === 'string') content = data.content.text;
+    else if (typeof data.content.content === 'string') content = data.content.content;
+    else if (Array.isArray(data.content.content)) {
+      // 嵌套 content 数组
+      const nested = data.content.content.find(b => b.type === 'text' || b.text);
+      if (nested) content = nested.text || nested.content || '';
+    }
+  }
+  // 格式3: OpenAI 兼容格式 { choices: [{ message: { content: '...' } }] }
   if (!content && Array.isArray(data.choices)) {
     content = data.choices[0]?.message?.content || data.choices[0]?.text || '';
-  }
-  // 格式3: 对象型 content { content: { text: '...' } } 或 { content: { content: [...] } }
-  if (!content && typeof data.content === 'object' && data.content !== null) {
-    if (data.content.text) content = data.content.text;
-    else if (data.content.content) content = data.content.content;
   }
   // 格式4: 直接在顶级返回文本字段
   if (!content) content = data.response || data.text || data.generated_text || '';
   // 格式5: content 本身就是字符串
   if (!content && typeof data.content === 'string') content = data.content;
-  // 格式6: content 是纯文本包裹
+  // 格式6: output 字段
   if (!content && typeof data.output === 'string') content = data.output;
 
   if (!content) {
