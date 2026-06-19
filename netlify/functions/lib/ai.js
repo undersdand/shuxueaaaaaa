@@ -38,9 +38,9 @@ async function generateQuestions(chapter, existingStems, count = 3) {
 
   const data = await response.json();
   console.log('AI Response full keys:', JSON.stringify(Object.keys(data)));
-  console.log('AI Response sample:', JSON.stringify(data).substring(0, 300));
+  console.log('AI Response sample:', JSON.stringify(data).substring(0, 500));
 
-  // 尝试多种格式提取 AI 返回的文本
+  // 尝试多种格式提取 AI 返回的文本内容
   let content = '';
   // 格式1: Anthropic 标准格式 { content: [{ type: 'text', text: '...' }] }
   if (Array.isArray(data.content)) {
@@ -51,16 +51,30 @@ async function generateQuestions(chapter, existingStems, count = 3) {
   if (!content && Array.isArray(data.choices)) {
     content = data.choices[0]?.message?.content || data.choices[0]?.text || '';
   }
-  // 格式3: 直接返回文本 { response: '...' } 或 { text: '...' }
-  if (!content) content = data.response || data.text || data.content?.toString() || '';
-  // 格式4: 如果 content 本身是字符串
+  // 格式3: 对象型 content { content: { text: '...' } } 或 { content: { content: [...] } }
+  if (!content && typeof data.content === 'object' && data.content !== null) {
+    if (data.content.text) content = data.content.text;
+    else if (data.content.content) content = data.content.content;
+  }
+  // 格式4: 直接在顶级返回文本字段
+  if (!content) content = data.response || data.text || data.generated_text || '';
+  // 格式5: content 本身就是字符串
   if (!content && typeof data.content === 'string') content = data.content;
+  // 格式6: content 是纯文本包裹
+  if (!content && typeof data.output === 'string') content = data.output;
 
   if (!content) {
     console.error('AI unknown response format:', JSON.stringify(data).substring(0, 1000));
     throw new Error(`AI returned empty response - unknown format. Keys: ${Object.keys(data).join(', ')}`);
   }
 
+  // 如果 content 已经是解析好的对象/数组，直接使用
+  if (typeof content === 'object') {
+    const result = Array.isArray(content) ? content : [content];
+    return result.map((q, i) => formatQuestion(q, chapter, i));
+  }
+
+  // 否则是字符串，尝试提取 JSON
   let jsonStr = content;
   const codeMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
   if (codeMatch) {
@@ -82,27 +96,29 @@ async function generateQuestions(chapter, existingStems, count = 3) {
     throw new Error('AI returned empty or non-array result');
   }
 
-  return questions.map((q, i) => {
-    const options = (q.options || []).map(opt =>
-      typeof opt === 'string' ? opt.replace(/^[A-Da-d][.、．]\s*/, '') : opt
-    );
-    let answer = q.answer;
-    if (typeof answer === 'string') {
-      const li = 'abcd'.indexOf(answer.toLowerCase());
-      if (li >= 0) answer = li;
-      else answer = parseInt(answer) || 0;
-    }
-    return {
-      id: `q_${chapter.id}_${Date.now()}_${i}`,
-      chapterId: chapter.id,
-      difficulty: 'medium',
-      stem: q.stem || '',
-      options,
-      answer,
-      explanation: q.explanation || '',
-      topic: q.topic || '',
-    };
-  });
+  return questions.map((q, i) => formatQuestion(q, chapter, i));
+}
+
+function formatQuestion(q, chapter, index) {
+  const options = (q.options || []).map(opt =>
+    typeof opt === 'string' ? opt.replace(/^[A-Da-d][.、．]\s*/, '') : opt
+  );
+  let answer = q.answer;
+  if (typeof answer === 'string') {
+    const li = 'abcd'.indexOf(answer.toLowerCase());
+    if (li >= 0) answer = li;
+    else answer = parseInt(answer) || 0;
+  }
+  return {
+    id: `q_${chapter.id}_${Date.now()}_${index}`,
+    chapterId: chapter.id,
+    difficulty: 'medium',
+    stem: q.stem || '',
+    options,
+    answer,
+    explanation: q.explanation || '',
+    topic: q.topic || '',
+  };
 }
 
 module.exports = { generateQuestions };
